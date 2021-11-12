@@ -22,48 +22,59 @@ impl SlaveAddr {
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[repr(u8)]
 pub enum Register {
-    STATUS_AUX = 0x07,
-    OUT_ADC1_L = 0x08,
-    OUT_ADC1_H = 0x09,
-    OUT_ADC2_L = 0x0A,
-    OUT_ADC2_H = 0x0B,
-    OUT_ADC3_L = 0x0C,
-    OUT_ADC3_H = 0x0D,
+    PIN_CTRL = 0x02,
+    FIFO_CTRL_1 = 0x07,
+    FIFO_CTRL_2 = 0x08,
+    FIFO_CTRL_3 = 0x09,
+    FIFO_CTRL_4 = 0x0A,
+    COUNTER_BDR_REG1 = 0x0B,
+    COUNTER_BDR_REG2 = 0x0C,
+    INT1_CTRL = 0x0D,
+    INT2_CTRL = 0x0E,
     WHOAMI = 0x0F,
-    CTRL0 = 0x1E,
-    TEMP_CFG = 0x1F,
-    CTRL1 = 0x20,
-    CTRL2 = 0x21,
-    CTRL3 = 0x22,
-    CTRL4 = 0x23,
-    CTRL5 = 0x24,
-    CTRL6 = 0x25,
-    REFERENCE = 0x26,
-    STATUS = 0x27,
-    OUT_X_L = 0x28,
-    OUT_X_H = 0x29,
-    OUT_Y_L = 0x2A,
-    OUT_Y_H = 0x2B,
-    OUT_Z_L = 0x2C,
-    OUT_Z_H = 0x2D,
-    FIFO_CTRL = 0x2E,
-    FIFO_SRC = 0x2F,
-    INT1_CFG = 0x30,
-    INT1_SRC = 0x31,
-    INT1_THS = 0x32,
-    INT1_DURATION = 0x33,
-    INT2_CFG = 0x34,
-    INT2_SRC = 0x35,
-    INT2_THS = 0x36,
-    INT2_DURATION = 0x37,
-    CLICK_CFG = 0x38,
-    CLICK_SRC = 0x39,
-    CLICK_THS = 0x3A,
-    TIME_LIMIT = 0x3B,
-    TIME_LATENCY = 0x3C,
-    TIME_WINDOW = 0x3D,
-    ACT_THS = 0x3E,
-    ACT_DUR = 0x3F,
+    CTRL1_XL = 0x10,
+    CTRL3_C = 0x12,
+    CTRL4_C = 0x13,
+    CTRL5_C = 0x14,
+    CTRL6_C = 0x15,
+    CTRL7_C = 0x16,
+    CTRL8_XL = 0x17,
+    CTRL10_C = 0x19,
+    ALL_INT_SRC = 0x1A,
+    WAKE_UP_SRC = 0x1B,
+    STATUS_REG = 0x1E,
+    OUT_TEMP_L = 0x20,
+    OUT_TEMP_H = 0x21,
+    OUTX_L_A = 0x28,
+    OUTX_H_A = 0x29,
+    OUTY_L_A = 0x2A,
+    OUTY_H_A = 0x2B,
+    OUTZ_L_A = 0x2C,
+    OUTZ_H_A = 0x2D,
+    FIFO_STATUS1 = 0x3A,
+    FIFO_STATUS2 = 0x3B,
+    TIMESTAMP0 = 0x40,
+    TIMESTAMP1 = 0x41,
+    TIMESTAMP2 = 0x42,
+    TIMESTAMP3 = 0x43,
+    SLOPE_EN = 0x56,
+    INTERRUPTS_EN = 0x58,
+    WAKE_UP_THS = 0x5B,
+    WAKE_UP_DUR = 0x5C,
+    MD1_CFG = 0x5E,
+    MD2_CFG = 0x5F,
+    INTERNAL_FREQ_FINE = 0x63,
+    X_OFS_USR = 0x73,
+    Y_OFS_USR = 0x74,
+    Z_OFS_USR = 0x75,
+    FIFO_DATA_OUT_TAG = 0x78,
+    FIFO_DATA_OUT_X_L = 0x79,
+    FIFO_DATA_OUT_X_H = 0x7A,
+    FIFO_DATA_OUT_Y_L = 0x7B,
+    FIFO_DATA_OUT_Y_H = 0x7C,
+    FIFO_DATA_OUT_Z_L = 0x7D,
+    FIFO_DATA_OUT_Z_H = 0x7E,
+    
 }
 
 impl Register {
@@ -76,25 +87,32 @@ impl Register {
     pub fn read_only(self) -> bool {
         matches!(
             self,
-            Register::STATUS_AUX
-                | Register::OUT_ADC1_L
-                | Register::OUT_ADC1_H
-                | Register::OUT_ADC2_L
-                | Register::OUT_ADC2_H
-                | Register::OUT_ADC3_L
-                | Register::OUT_ADC3_H
-                | Register::WHOAMI
-                | Register::STATUS
-                | Register::OUT_X_L
-                | Register::OUT_X_H
-                | Register::OUT_Y_L
-                | Register::OUT_Y_H
-                | Register::OUT_Z_L
-                | Register::OUT_Z_H
-                | Register::FIFO_SRC
-                | Register::INT1_SRC
-                | Register::INT2_SRC
-                | Register::CLICK_SRC
+            | Register::WHOAMI
+            | Register::ALL_INT_SRC
+            | Register::WAKE_UP_SRC
+            | Register::STATUS_REG
+            | Register::OUT_TEMP_L
+            | Register::OUT_TEMP_H
+            | Register::OUTX_L_A
+            | Register::OUTX_H_A
+            | Register::OUTY_L_A
+            | Register::OUTY_H_A
+            | Register::OUTZ_L_A
+            | Register::OUTZ_H_A
+            | Register::FIFO_STATUS1
+            | Register::FIFO_STATUS2
+            | Register::TIMESTAMP0
+            | Register::TIMESTAMP1
+            | Register::TIMESTAMP2
+            | Register::TIMESTAMP3
+            | Register::INTERNAL_FREQ_FINE
+            | Register::FIFO_DATA_OUT_TAG
+            | Register::FIFO_DATA_OUT_X_L
+            | Register::FIFO_DATA_OUT_X_H
+            | Register::FIFO_DATA_OUT_Y_L
+            | Register::FIFO_DATA_OUT_Y_H
+            | Register::FIFO_DATA_OUT_Z_L
+            | Register::FIFO_DATA_OUT_Z_H
         )
     }
 }
