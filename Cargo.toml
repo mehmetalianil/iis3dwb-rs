@@ -1,18 +1,20 @@
 [package]
-name = "lis3dh"
-description = "An embedded-hal driver for the LIS3DH accelerometer that implements the generic accelerometer trait"
-version = "0.4.1"
+name = "iis3dwb"
+description = "An embedded-hal driver for the IIS3DWB accelerometer that implements the generic accelerometer trait"
+version = "0.0.1"
 license = "Apache-2.0 OR MIT"
 authors = [
-    "Benjamin Bergman <ben@benbergman.ca>",
-    "Paul Sajna <sajattack@gmail.com>",
-    "Jesse Braham <jesse@beta7.io>",
+    "Mehmet Ali Anil <nehmet@grusbv.com>"
+    # TODO: I am not sure the other authors would be willing to be listed, ask them!
+    # "Benjamin Bergman <ben@benbergman.ca>",
+    # "Paul Sajna <sajattack@gmail.com>", 
+    # "Jesse Braham <jesse@beta7.io>",
 ]
 keywords = [
     "embedded-hal-driver",
     "accelerometer",
 ]
-repository = "https://github.com/BenBergman/lis3dh-rs"
+repository = "https://github.com/mehmetalianil/iis3dwb-rs"
 edition = "2018"
 
 [dependencies]
