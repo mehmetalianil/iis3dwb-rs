@@ -206,6 +206,17 @@ impl DataRate {
     }
 }
 
+pub struct InternalFreqFine (pub(crate) u8);
+impl InternalFreqFine {
+    pub const fn val(self) -> i8 {
+        self.0 as i8
+    }
+
+    pub const fn hz (self) -> f32 {
+        26667.0 + (((self.0 as f32)* 0.0015)* 26667.0)
+    }
+}
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Duration(pub(crate) u8);
 

@@ -17,10 +17,25 @@ keywords = [
 repository = "https://github.com/mehmetalianil/iis3dwb-rs"
 edition = "2018"
 
+[features]
+# set logging levels here
+default = [
+  "defmt-default",
+]
+
+# do NOT modify these features
+defmt-default = []
+defmt-trace = []
+defmt-debug = []
+defmt-info = []
+defmt-warn = []
+defmt-error = []
+
 [dependencies]
 accelerometer = "~0.12"
 embedded-hal = "~0.2"
 num_enum = { version = "~0.5", default-features = false }
+defmt = "0.2.0"
 
 [dev-dependencies]
 circuit_playground_express = { version = "~0.7", features = ["use_semihosting"] }
