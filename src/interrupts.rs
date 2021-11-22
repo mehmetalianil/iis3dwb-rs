@@ -13,12 +13,6 @@ pub struct Interrupt1;
 pub struct Interrupt2;
 
 pub trait Interrupt {
-    fn ctrl_reg() -> Register;
-    fn ths_reg() -> Register;
-    fn src_reg() -> Register;
-    fn duration_reg() -> Register;
-    fn lir_int_bit() -> u8;
-    fn d4d_int_bit() -> u8;
 }
 
 impl Interrupt for Interrupt1 {

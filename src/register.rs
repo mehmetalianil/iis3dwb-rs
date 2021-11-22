@@ -212,7 +212,7 @@ impl InternalFreqFine {
         self.0 as i8
     }
 
-    pub const fn hz (self) -> f32 {
+    pub fn hz (self) -> f32 {
         26667.0 + (((self.0 as f32)* 0.0015)* 26667.0)
     }
 }

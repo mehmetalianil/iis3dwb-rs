@@ -14,12 +14,12 @@ impl SleepDuration{
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Clone)]
 pub struct WakeUp {
     filtered: bool,
     threshold: Threshold,
-    wake_duration: WakeDuration,
-    sleep_duration: SleepDuration,
+    // wake_duration: WakeDuration,
+    // sleep_duration: SleepDuration,
 }
 
 

@@ -17,11 +17,12 @@ pub use accelerometer::{
     vector::{I16x3,F32x3,I32x3}
 };
 
-use interrupts::{Interrupt1, Interrupt2};
-use wakeups::{WakeUp};
-use register::{DataRate, Mode, Range, Register};
+// use interrupts::{Interrupt1, Interrupt2};
+// use wakeups::{WakeUp};
+pub use register::{DataRate, Mode, Range, Register};
 use register::{DEVICE_ID,
-               XL_EN_MASK};
+               XL_EN_MASK,
+               FS_EN_MASK,};
 
 use core::fmt::Debug;
 
@@ -36,6 +37,10 @@ pub struct Config {
     pub enable_y_axis: bool,   
     pub enable_z_axis: bool,   
     pub enable_temp:bool,
+    pub range: Range,
+    // pub interrupt1: Range,
+    // pub interrupt2: Range,
+    // pub wake_up: WakeUp,
 }
  
 impl Default for Config{
@@ -47,6 +52,10 @@ impl Default for Config{
             enable_y_axis: true,   
             enable_z_axis: true,   
             enable_temp: true,
+            range: Range::G2,
+            // interrupt1: Interrupt1::None,
+            // interrupt2: Interrupt2::None,
+            // wake_up: WakeUp::None,
         }
     }
 }
@@ -55,12 +64,11 @@ impl Default for Config{
 pub struct IIS3DWB <SPI, CS>{
     spi : SPI,
     cs  : CS,
-
     // configuration 
     range : Range,
-    interrupt1: Interrupt1,
-    interrupt2: Interrupt2,
-    wake_up: WakeUp,
+    // interrupt1: Interrupt1,
+    // interrupt2: Interrupt2,
+    // wake_up: WakeUp,
 }
 
 /// Driver's implementation for given SPI and CS
@@ -73,10 +81,10 @@ where
         let mut iis3dwb = IIS3DWB {
             spi,
             cs, 
-            range: config.range.default(),
-            interrupt1: config.interrupt1.default(),
-            interrupt2: config.interrupt2.default(),
-            wake_up: config.wake_up.default()
+            range: config.range,
+            // interrupt1: config.interrupt1,
+            // interrupt2: config.interrupt2,
+            // wake_up: config.wake_up
         };
 
         let id= iis3dwb.get_device_id();
@@ -84,18 +92,19 @@ where
             // raise
         }
         // set_range
-        iis3dwb.set_range( iis3dwb.range.bits());
+        iis3dwb.set_range(iis3dwb.range);
+        Ok(iis3dwb)
     }  
 
     pub fn start(&mut self) {
         self.modify_register( Register::CTRL1_XL.addr(), 
-                             Register::XL_EN_MASK, 
+                             XL_EN_MASK, 
                               0b101);
     }
 
     pub fn set_range(&mut self, range: Range) {
         self.modify_register( Register::CTRL1_XL.addr(), 
-                             Register::FS_EN_MASK, 
+                              FS_EN_MASK, 
                               range.bits());
     }
 
@@ -109,8 +118,7 @@ where
 
       /// Returns the raw contents of the temperature registers
     pub fn read_temp_raw(&mut self) -> u16 {
-
-        let mut bytes = [(Register::TEMP2.addr() << 1)  | SPI_READ, 0, 0];
+        let mut bytes = [Register::OUT_TEMP_H.addr() | SPI_READ, 0, 0];
         self.read(&mut bytes);
 
         let temp_h = ((bytes[1] & 0x0F) as u16) << 8;
@@ -148,14 +156,14 @@ where
     /// I chose the simplistic way, since this is my first rs dd.
     /// 
     /// Also, test this, it is a slippery slope.
-    fn modify_register(&mut self, reg: u8, mask: u8, val: u8) 
+    fn modify_register(&mut self, reg: u8, mask: u8, val: u8) -> Result<(),()>
     {
-        if mask == 0 {return Err();}
+        if mask == 0 {return Err(());}
         let mut register_value=[0u8]; 
         self.read_reg( reg,&mut register_value);
         let mut bitshift = 0u8;
         let mut sacrificial_mask = mask.clone();
-        //ugly dangerous loop calculating shifts
+        //ugly dangerous loop calculating shifts 
         while sacrificial_mask != 0 {
             if sacrificial_mask & 0x01 == 0x01 { break; }
             else{
@@ -174,12 +182,13 @@ where
         // 0x0000_0110 | (val << 4) which is 0b0101_0000 = 0b0101_0110
         let clear_mask = !mask;
         let set_mask = val << bitshift;
-        register_value = (register_value & clear_mask) | set_mask;
-        self.write_reg( reg, &mut [register_value]);
+        register_value[0] = (register_value[0] & clear_mask) | set_mask;
+        self.write_reg( reg, register_value[0]);
+        Ok(())  
     }    
 }
 
-impl<SPI, CS, E, PinError> RawAccelerometer<I32x3> for IIS3DWB <SPI, CS>
+impl<SPI, CS, E, PinError> RawAccelerometer<I16x3> for IIS3DWB <SPI, CS>
 where
     SPI: spi::Transfer<u8, Error=E> + spi::Write<u8, Error=E>,
     CS: OutputPin<Error = PinError>,
