@@ -33,7 +33,7 @@ pub fn exit() -> ! {
 }
 
 
-#[cortex_m_rt::entry]
+#[entry]
 fn main() -> ! {
     info!("running!");
 
@@ -62,7 +62,7 @@ fn main() -> ! {
 
     let mut accelerometer = IIS3DWB::new(spi, ncs, &acc_cfg).unwrap();
     let mut id = accelerometer.get_device_id();
-    defmt::info!("The device ID is: {}", id);
+    defmt::info!("The device ID is: {=u8:x}", id);
     exit();
 }
 

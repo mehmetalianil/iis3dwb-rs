@@ -20,17 +20,8 @@ edition = "2018"
 [features]
 # set logging levels here
 default = [
-  "defmt-default",
 ]
 
-
-# do NOT modify these features
-defmt-default = []
-defmt-trace = []
-defmt-debug = []
-defmt-info = []
-defmt-warn = []
-defmt-error = []
 
 # # cargo build/run
 # [profile.dev]
