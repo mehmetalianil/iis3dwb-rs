@@ -1,8 +1,7 @@
 MEMORY
 {
-  /* Leave 8k for the default bootloader on the Circuit Playground Express */
-  FLASH (rx) : ORIGIN = 0x00000000 + 8K, LENGTH = 256K - 8K
-  RAM (xrw)  : ORIGIN = 0x20000000, LENGTH = 32K
+  /* NOTE 1 K = 1 KiBi = 1024 bytes */
+  /* These values correspond to the NRF52840 with Softdevices S140 7.0.1 */
+  FLASH : ORIGIN = 0x00027000, LENGTH = 868K
+  RAM : ORIGIN = 0x20020000, LENGTH = 128K
 }
-_stack_start = ORIGIN(RAM) + LENGTH(RAM);
-

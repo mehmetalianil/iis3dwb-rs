@@ -25,6 +25,7 @@ use panic_probe as _;
 fn panic() -> ! {
     cortex_m::asm::udf()
 }
+
 pub fn exit() -> ! {
     loop {
         cortex_m::asm::bkpt();
@@ -32,9 +33,8 @@ pub fn exit() -> ! {
 }
 
 
-
-#[entry]
- fn main() -> ! {
+#[cortex_m_rt::entry]
+fn main() -> ! {
     info!("running!");
 
     let p = nrf52840_hal::pac::Peripherals::take().unwrap();
